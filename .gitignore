@@ -2,3 +2,13 @@
 .Rhistory
 .RData
 .Ruserdata
+data/*
+!data/.gitkeep
+!data/ATS/.gitkeep
+!data/Tekno/.gitkeep
+!data/Lotek/.gitkeep
+!data/Lotek/celaned_with_UCD_tags/.gitkeep
+data_output/*
+!data_output/accepted/.gitkeep
+!data_output/cleaned/.gitkeep
+!data_output/rejected/.gitkeep
