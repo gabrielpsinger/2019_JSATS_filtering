@@ -1,0 +1,29 @@
+# git files
+.gitattributes export-ignore
+.gitignore export-ignore
+
+# Custom for Visual Studio
+*.cs     diff=csharp
+
+# Standard to msysgit
+*.doc	  diff=astextplain
+*.DOC	  diff=astextplain
+*.docx  diff=astextplain
+*.DOCX  diff=astextplain
+*.dot   diff=astextplain
+*.DOT   diff=astextplain
+*.pdf   diff=astextplain
+*.PDF	  diff=astextplain
+*.rtf	  diff=astextplain
+*.RTF	  diff=astextplain
+
+# Don't normalize Microsoft Office files, as internal end-of-line characters may not really be end-of-line characters.
+*.mdb   -text
+*.accdb -text
+*.doc   -text
+*.docx  -text
+*.xls   -text
+*.xlsx  -text
+
+# Auto detect text files and perform LF normalization
+* text eol=crlf
