@@ -40,10 +40,10 @@ DoCleanPrePre <- FALSE
 DoCleanRT <- FALSE
 DoCleanShoreRT <- FALSE
 
-DoCleanJST <- TRUE
+DoCleanJST <- FALSE
 DoCleanSUM <- FALSE
 DoCleanLotek <- TRUE
-DoCleanATS <- TRUE
+DoCleanATS <- FALSE
 
 RT_Dir <- "Z:/LimitedAccess/tek_realtime_sqs/data/preprocess/"
 RT_File_PATTERN <- "jsats_2016901[1389]_TEK_JSATS_*|jsats_2017900[34]_JSATS_*|jsats_20169020_TEK_JSATS_17607[12]*"
@@ -52,9 +52,9 @@ SSRT_Dir <- "D:/tempssd2/SS/filtered/"
 RAW_DATA_DIR <- "data/"
 TEKNO_SUBDIR <- "Tekno/" # "" or "./" if not in a subdirectory of data directory
 ATS_SUBDIR <- "ATS/" # or ""
-LOTEK_SUBDIR <- "Lotek/cleaned with UCD tags/"
+LOTEK_SUBDIR <- "Lotek/cleaned_with_UCD_tags/"
 
-vTAGFILENAME <- data.table(TagFilename=c("tags/2019TEfishRice.csv","tags/qPRIcsvColemanTank.csv"),PRI=c(5,5)) # Individual tag lists with path relative to project working directory. Default PRIs for files when otherwise not specified.
+vTAGFILENAME <- data.table(TagFilename=c("taglists/2019TEfishRice.csv","taglists/qPRIcsvColemanTank.csv", "taglists/2019PCkTags.csv"),PRI=c(5,5, 5)) # Individual tag lists with path relative to project working directory. Default PRIs for files when otherwise not specified.
 
 DoSaveIntermediate <- TRUE # (DoCleanJST || DoCleanSUM || DoCleanATS || DoCleanLotek)
 DoFilterFromSavedCleanedData <- TRUE || !DoSaveIntermediate # if you're not saving the intermediate, you should do direct processing
@@ -156,9 +156,11 @@ extractSNfromFN <-function(i) {
   return(SN)
 }
 
+
+
 recheckTekno <- function() { # not hooked into any other function. Will not automatically run. # only looks for multiple checksums for a tagID
   dat<-data.table()
-  for(i in list.files("./accepted",full.names=TRUE)){
+  for(i in list.files("./data_output/accepted",full.names=TRUE)){
     id<-as.logical(file.info(i)["isdir"])
     if (is.null(id) || is.na(id)) id <- TRUE
     if (id==TRUE) next
@@ -269,7 +271,7 @@ dataFilter2.6 <- function(dat, filterthresh, countermax) {
 filterData <- function(incomingData=NULL) {
   j <- 0
   loopFiles <- function() {
-    for(i in list.files("./cleaned",full.names=TRUE)){
+    for(i in list.files("./data_output/cleaned",full.names=TRUE)){
       id<-as.logical(file.info(i)["isdir"])
       if (is.null(id) || is.na(id)) id <- TRUE
       if (id==TRUE) next
@@ -295,8 +297,8 @@ filterData <- function(incomingData=NULL) {
     } else {
       recsn <- rejecteds[!is.na(RecSN)][1][,RecSN]
     }
-    fwrite(rejecteds, paste0("./rejected/", sprintf("%04d",j), "_", recsn, "_rejected.csv"))
-    fwrite(myResults, paste0("./accepted/", sprintf("%04d",j), "_", recsn, "_accepted.csv"))
+    fwrite(rejecteds, paste0("./data_output/rejected/", sprintf("%04d",j), "_", recsn, "_rejected.csv"))
+    fwrite(myResults, paste0("./data_output/accepted/", sprintf("%04d",j), "_", recsn, "_accepted.csv"))
   }
   if (is.null(incomingData)) loopFiles()
   else proces(dat=incomingData)
@@ -523,7 +525,7 @@ cleanInnerWrap <-function(...) {
     for(sn in SNs) { # don't trust the initial file to have only a single receiver in it
       itercount <<- itercount + 1
       # fwri format stores timestamps as UTC-based (yyyy-mm-ddTHH:MM:SS.microsZ)
-      if (DoSaveIntermediate) fwrite(dat5[RecSN==sn], file = paste0("./cleaned/", foutPrefix, sprintf("%04d",itercount), "_", sn,  "_cleaned.fwri"))
+      if (DoSaveIntermediate) fwrite(dat5[RecSN==sn], file = paste0("./data_output/cleaned/", foutPrefix, sprintf("%04d",itercount), "_", sn,  "_cleaned.fwri"))
       if (!DoFilterFromSavedCleanedData) filterData(dat5[RecSN=sn])
     }
     rm(dat5)
