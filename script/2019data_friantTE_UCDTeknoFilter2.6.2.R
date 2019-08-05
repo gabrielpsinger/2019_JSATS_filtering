@@ -54,7 +54,7 @@ TEKNO_SUBDIR <- "Tekno/" # "" or "./" if not in a subdirectory of data directory
 ATS_SUBDIR <- "ATS/" # or ""
 LOTEK_SUBDIR <- "Lotek/cleaned with UCD tags/"
 
-vTAGFILENAME <- data.table(TagFilename=c("taglists/2019TEfish.csv"),PRI=c(5)) # direct filepath to to all UCD projects taglist?
+vTAGFILENAME <- data.table(TagFilename=c("tags/2019TEfishRice.csv","tags/qPRIcsvColemanTank.csv"),PRI=c(5,5)) # Individual tag lists with path relative to project working directory. Default PRIs for files when otherwise not specified.
 
 DoSaveIntermediate <- TRUE # (DoCleanJST || DoCleanSUM || DoCleanATS || DoCleanLotek)
 DoFilterFromSavedCleanedData <- TRUE || !DoSaveIntermediate # if you're not saving the intermediate, you should do direct processing
@@ -309,7 +309,8 @@ readTags <- function(vTagFileNames=vTAGFILENAME, priColName=c('PRI_nominal','Per
   ret <- data.frame(TagID_Hex=character(),nPRI=numeric(),rel_group=character())
   setDT(ret,key="TagID_Hex")
   for (i in 1:nrow(vTagFileNames)) {
-    fn <- vTagFileNames[i,"TagFilename"]
+    fn <- as.character(vTagFileNames[i,"TagFilename"])
+    # browser()
     if (!file.exists(fn)) { next }
     pv <- as.numeric(vTagFileNames[i, PRI])
     tags <- fread(fn, header=TRUE, stringsAsFactors=FALSE, blank.lines.skip=TRUE) # list of known Tag IDs
@@ -337,8 +338,8 @@ readTags <- function(vTagFileNames=vTAGFILENAME, priColName=c('PRI_nominal','Per
     setkey(tags,TagID_Hex)
     ret <- rbindlist(list(ret, tags[!ret]),use.names=TRUE)
   }
-  setDT(ret,key="TagID_Hex") # may not be needed manymore
-  ret[,TagID_Hex:=substr(as.character(TagID_Hex),1,4] # drop factors
+  setDT(ret,key="TagID_Hex") # may not be needed anymore
+  ret[,TagID_Hex:=substr(as.character(TagID_Hex),1,4)] # drop factors
   return(ret)
 }
 
@@ -459,7 +460,7 @@ cleanInnerWrap <-function(...) {
       dat[,dtf:=as.character(lotekDateconvert(as.numeric(dtf),tz),format="%Y-%m-%d %H:%M:%S",tz=tz)]
       dtFormat="%Y-%m-%d %H:%M:%OS"
     }
-	suppressWarnings(dat[,Dec:=NULL])
+    suppressWarnings(dat[,Dec:=NULL])
     colnamelist<-as.data.table(names(dat))
     if (colnamelist[V1=="valid",.N] > 0) {
       if (dat[valid==0,.N] > 0) {
