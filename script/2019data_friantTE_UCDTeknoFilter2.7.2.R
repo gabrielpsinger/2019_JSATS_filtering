@@ -413,7 +413,7 @@ CSVsubtype <- function(lfs, i, tags, precleanDir, filePattern = "(*.CSV)|(*.TXT)
   if (checkType=="ATS" || checkType=="unknown") {
     if (ATSprecolname || (length(acn) > 1 && ATScolnames[acn[1]] != "TagCode")) {
       lfs[filename==fileName,c('typeMatch','header','fun','leadingBlanks','dtFormat','hif','rdhs'):=
-                          list(TRUE,list(ATScolnames),list(cleanATScsv),0,dtFormat,TRUE,list(Rec_dtf_Hex_strings))] # as.logical(checkType=="ATS")
+                          list(TRUE,list(ATScolnames),list(cleanATScsv),0,..dtFormat,TRUE,list(Rec_dtf_Hex_strings))] # as.logical(checkType=="ATS")
       ctbool <- FALSE
     } else {
       lfs[filename==fileName,typeMatch:=FALSE]
@@ -423,7 +423,7 @@ CSVsubtype <- function(lfs, i, tags, precleanDir, filePattern = "(*.CSV)|(*.TXT)
     if (length(fhead)==11 && all(startsWith(fhead,"V")) && (identical(classes,c("integer","integer","character","numeric","character","integer","integer","integer","integer","numeric","character")) ||
                                                             identical(classes,c("integer","integer","character","numeric","integer","integer","integer","integer","integer","numeric","character")))) {
       lfs[filename==fileName,c('typeMatch','header','fun','leadingBlanks','dtFormat','hif','rdhs'):=
-                          list(TRUE,list(SS_colnames),list(cleanInnerWrap),0,dtFormat,FALSE,list(Rec_dtf_Hex_strings))]
+                          list(TRUE,list(SS_colnames),list(cleanInnerWrap),0,..dtFormat,FALSE,list(Rec_dtf_Hex_strings))]
       ctbool <- FALSE
     } else {
       lfs[filename==fileName,typeMatch:=FALSE]
@@ -434,12 +434,12 @@ CSVsubtype <- function(lfs, i, tags, precleanDir, filePattern = "(*.CSV)|(*.TXT)
     if (length(fhead)==5 && all(startsWith(fhead,"V")) && classes[1]=="numeric" && classes[2]=="numeric" && classes[3]=="integer" && classes[5]=="integer") { # 4 is char, but could be interpretted as numeric
       Rec_dtf_Hex_strings[1] <- NA
       lfs[filename==fileName,c('typeMatch','header','leadingBlanks','fun','dtFormat','hif','rdhs'):=
-                          list(TRUE,list(LOTcolnames[-1]),0,list(cleanInnerWrap),dtFormat,FALSE,list(Rec_dtf_Hex_strings))]
+                          list(TRUE,list(LOTcolnames[-1]),0,list(cleanInnerWrap),..dtFormat,FALSE,list(Rec_dtf_Hex_strings))]
       ctbool <- FALSE
     } else if (length(fhead)==6 && all(startsWith(fhead,"V")) && classes[1]=="character" && classes[2]=="numeric" && classes[3]=="numeric" && classes[4]=="integer" && classes[6]=="integer") { # 5 is char, but could be interpretted as numeric
       Rec_dtf_Hex_strings[1] <- "RecSN"
       lfs[filename==fileName,c('typeMatch','header','leadingBlanks','fun','dtFormat','hif','rdhs'):=
-                          list(TRUE,list(LOTcolnames),0,list(cleanInnerWrap),dtFormat,FALSE,list(Rec_dtf_Hex_strings))]
+                          list(TRUE,list(LOTcolnames),0,list(cleanInnerWrap),..dtFormat,FALSE,list(Rec_dtf_Hex_strings))]
       ctbool <- FALSE
     } else {
       lfs[filename==fileName,typeMatch:=FALSE]
